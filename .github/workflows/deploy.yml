@@ -29,4 +29,4 @@ jobs:
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key" \
-            dist/ "$DEPLOY_USER@$DEPLOY_HOST:/var/www/ezrawitsch.com/"
+            dist/ "$DEPLOY_USER@$DEPLOY_HOST:/var/www/html/ezrawitsch.com/"
