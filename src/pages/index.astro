@@ -20,7 +20,7 @@ const pageDescription = 'Writer and geographer. Maps, cities, and the politics o
 
 <body>
   <!-- Terrain Background -->
-  <div class="terrain-bg" aria-hidden="true"></div>
+  <div id="terrain-bg" class="terrain-bg" aria-hidden="true"></div>
   
   <!-- Navigation -->
   <nav class="nav">
@@ -196,6 +196,34 @@ const pageDescription = 'Writer and geographer. Maps, cities, and the politics o
       <p class="footer-text">Ezra Rawitsch</p>
     </div>
   </footer>
+
+  <script>
+    (() => {
+      const bg = document.getElementById('terrain-bg');
+      if (!bg) return;
+
+      let ticking = false;
+
+      const updateBackgroundPosition = () => {
+        const doc = document.documentElement;
+        const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
+        const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+        bg.style.backgroundPosition = `center ${progress * 100}%`;
+        ticking = false;
+      };
+
+      const requestUpdate = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateBackgroundPosition);
+          ticking = true;
+        }
+      };
+
+      window.addEventListener('scroll', requestUpdate, { passive: true });
+      window.addEventListener('resize', requestUpdate);
+      requestUpdate();
+    })();
+  </script>
 </body>
 
 <style>
@@ -247,10 +275,11 @@ const pageDescription = 'Writer and geographer. Maps, cities, and the politics o
     inset: 0;
     background-image: url('/terrain.jpg');
     background-size: cover;
-    background-position: center center;
+    background-position: center 0%;
     background-repeat: no-repeat;
     pointer-events: none;
     z-index: -1;
+    will-change: background-position;
   }
 
   /* Navigation */
