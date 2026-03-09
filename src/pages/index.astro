@@ -244,24 +244,13 @@ const pageDescription = 'Writer and geographer. Maps, cities, and the politics o
   /* Terrain Background */
   .terrain-bg {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-image: url('/terrain.jpg');
     background-size: cover;
-    background-position: center top;
+    background-position: center center;
     background-repeat: no-repeat;
-    background-attachment: scroll;
     pointer-events: none;
     z-index: -1;
-    animation: terrain-scroll linear forwards;
-    animation-timeline: scroll(root);
-  }
-
-  @keyframes terrain-scroll {
-    from { background-position: center top; }
-    to { background-position: center bottom; }
   }
 
   /* Navigation */
