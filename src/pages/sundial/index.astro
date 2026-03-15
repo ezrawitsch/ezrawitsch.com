@@ -276,14 +276,14 @@ const pageDescription = 'An interactive horizontal sundial calculator. Input you
         document.getElementById('out-rise-set').textContent = `${formatTime(sunrise)} / ${formatTime(sunset)}`;
         document.getElementById('out-day-length').textContent = formatDuration(dayLen);
 
-        drawDial(lat, date);
+        drawDial(lat, lon, tz, date);
         drawGnomon(lat);
         drawAnalemma(doy);
       }
 
       // --- Dial SVG ---
-      function drawDial(lat, date) {
-        const W = 500, H = 520;
+      function drawDial(lat, lon, tz, date) {
+        const W = 500, H = 620;
         const cx = W / 2, cy = 380;
         const R = 170;
         const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -358,6 +358,46 @@ const pageDescription = 'An interactive horizontal sundial calculator. Input you
 
         // Noon line label
         svg += `<text x="${cx + 8}" y="${cy - R + 20}" font-size="7" font-style="italic" fill="#2c2c2c">noon</text>`;
+
+        // --- Correction table ---
+        // Fixed longitude correction: difference between local meridian and timezone central meridian
+        const lonCorrection = (tz * 15 - lon) * 4; // minutes (4 min per degree)
+        const tableY = cy + 30;
+        const tableX = cx - 190;
+        const tableW = 380;
+        const colW = tableW / 12;
+        const rowH = 14;
+
+        // Title
+        svg += `<text x="${cx}" y="${tableY}" text-anchor="middle" font-size="8" font-variant="small-caps" letter-spacing="0.08em">Correction: add to sundial reading for clock time</text>`;
+
+        // Month headers
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const midDoys = [15, 46, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349];
+
+        const headerY = tableY + 16;
+        svg += `<line x1="${tableX}" y1="${headerY + 2}" x2="${tableX + tableW}" y2="${headerY + 2}" stroke-width="0.5"/>`;
+
+        for (let i = 0; i < 12; i++) {
+          const x = tableX + i * colW + colW / 2;
+          svg += `<text x="${x}" y="${headerY}" text-anchor="middle" font-size="6.5" font-style="italic">${months[i]}</text>`;
+        }
+
+        // Correction values (EoT + longitude offset)
+        const valY = headerY + rowH;
+        for (let i = 0; i < 12; i++) {
+          const eotMid = equationOfTime(midDoys[i]);
+          // Total correction: to go from sundial (solar) time to clock time
+          // Clock = Solar + lonCorrection - EoT
+          const correction = lonCorrection - eotMid;
+          const rounded = Math.round(correction);
+          const sign = rounded >= 0 ? '+' : '';
+          const x = tableX + i * colW + colW / 2;
+          svg += `<text x="${x}" y="${valY}" text-anchor="middle" font-size="7" font-family="'Courier New',monospace">${sign}${rounded}</text>`;
+        }
+
+        svg += `<line x1="${tableX}" y1="${valY + 4}" x2="${tableX + tableW}" y2="${valY + 4}" stroke-width="0.5"/>`;
+        svg += `<text x="${cx}" y="${valY + 16}" text-anchor="middle" font-size="6" font-style="italic" fill="#6b7280">minutes</text>`;
 
         svg += `</svg>`;
         document.getElementById('dial-container').innerHTML = svg;
