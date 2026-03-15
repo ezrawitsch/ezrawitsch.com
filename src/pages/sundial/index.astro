@@ -1,0 +1,751 @@
+---
+const pageTitle = 'Horizontal Sundial — Ezra Rawitsch'
+const pageDescription = 'An interactive horizontal sundial calculator. Input your location and date to generate a precise sundial face diagram with hour lines, gnomon template, and astronomical measurements.'
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription}>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="back-nav no-print">
+    <a href="/" class="back-link">&larr; ezrawitsch.com</a>
+  </nav>
+
+  <main class="container">
+    <header class="page-header">
+      <h1 class="page-title">Horizontal Sundial</h1>
+      <p class="page-subtitle">For the measurement of hours by the shadow of the sun</p>
+      <hr class="hairline">
+    </header>
+
+    <section class="inputs-section no-print">
+      <div class="input-row">
+        <div class="input-group">
+          <label for="latitude">Latitude</label>
+          <input type="number" id="latitude" value="51.47" step="0.01" min="-90" max="90">
+        </div>
+        <div class="input-group">
+          <label for="longitude">Longitude</label>
+          <input type="number" id="longitude" value="-0.118" step="0.001" min="-180" max="180">
+        </div>
+        <div class="input-group">
+          <label for="date-input">Date</label>
+          <input type="date" id="date-input">
+        </div>
+        <div class="input-group">
+          <label for="tz-offset">UTC offset</label>
+          <input type="number" id="tz-offset" step="0.5" min="-12" max="14">
+        </div>
+      </div>
+      <div class="button-row">
+        <button id="locate-btn" type="button">Use my location</button>
+        <button id="print-btn" type="button">Print sundial</button>
+      </div>
+    </section>
+
+    <section class="measurements-section">
+      <div class="section-header">
+        <h2 class="section-title">Measurements</h2>
+      </div>
+      <table class="ledger-table">
+        <tbody>
+          <tr><td class="label">Gnomon angle</td><td class="value" id="out-gnomon"></td></tr>
+          <tr><td class="label">Solar declination</td><td class="value" id="out-declination"></td></tr>
+          <tr><td class="label">Equation of time</td><td class="value" id="out-eot"></td></tr>
+          <tr><td class="label">Solar noon</td><td class="value" id="out-noon"></td></tr>
+          <tr><td class="label">Sunrise / Sunset</td><td class="value" id="out-rise-set"></td></tr>
+          <tr><td class="label">Day length</td><td class="value" id="out-day-length"></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="dial-section">
+      <div class="section-header">
+        <h2 class="section-title">Sundial Face</h2>
+      </div>
+      <div class="svg-container" id="dial-container"></div>
+    </section>
+
+    <section class="gnomon-section">
+      <div class="section-header">
+        <h2 class="section-title">Gnomon Template</h2>
+      </div>
+      <p class="section-note">Cut along the outline and fold along the base. The acute angle equals your latitude.</p>
+      <div class="svg-container" id="gnomon-container"></div>
+    </section>
+
+    <section class="analemma-section">
+      <div class="section-header">
+        <h2 class="section-title">Analemma</h2>
+      </div>
+      <p class="section-note">The figure-eight traces the sun's apparent position at noon throughout the year, combining the equation of time and solar declination.</p>
+      <div class="svg-container" id="analemma-container"></div>
+    </section>
+  </main>
+
+  <footer class="footer no-print">
+    <div class="footer-content">
+      <a href="/" class="footer-link">ezrawitsch.com</a>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      // --- Constants & helpers ---
+      const DEG = Math.PI / 180;
+      const RAD = 180 / Math.PI;
+      const ROMAN = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+      function dayOfYear(date) {
+        const start = new Date(date.getFullYear(), 0, 0);
+        return Math.floor((date - start) / 86400000);
+      }
+
+      function solarDeclination(doy) {
+        // Spencer's formula
+        const B = (doy - 1) * 2 * Math.PI / 365;
+        return (0.006918
+          - 0.399912 * Math.cos(B)
+          + 0.070257 * Math.sin(B)
+          - 0.006758 * Math.cos(2 * B)
+          + 0.000907 * Math.sin(2 * B)
+          - 0.002697 * Math.cos(3 * B)
+          + 0.00148  * Math.sin(3 * B)) * RAD;
+      }
+
+      function equationOfTime(doy) {
+        // Spencer's formula, returns minutes
+        const B = (doy - 1) * 2 * Math.PI / 365;
+        return 229.18 * (0.000075
+          + 0.001868 * Math.cos(B)
+          - 0.032077 * Math.sin(B)
+          - 0.014615 * Math.cos(2 * B)
+          - 0.04089  * Math.sin(2 * B));
+      }
+
+      function solarNoon(longitude, tzOffset, eot) {
+        // Returns decimal hours (local time)
+        return 12 - longitude / 15 + tzOffset - eot / 60;
+      }
+
+      function sunriseHourAngle(latDeg, declDeg) {
+        const lat = latDeg * DEG;
+        const decl = declDeg * DEG;
+        const cosH = -Math.tan(lat) * Math.tan(decl);
+        if (cosH < -1) return 180; // midnight sun
+        if (cosH > 1) return 0;   // polar night
+        return Math.acos(cosH) * RAD;
+      }
+
+      function hourLineAngle(latDeg, hourFromNoon) {
+        // tan(theta) = sin(lat) * tan(H * 15°)
+        const H = hourFromNoon * 15 * DEG;
+        return Math.atan(Math.sin(latDeg * DEG) * Math.tan(H)) * RAD;
+      }
+
+      function formatTime(decimalHours) {
+        let h = Math.floor(decimalHours);
+        let m = Math.round((decimalHours - h) * 60);
+        if (m === 60) { h++; m = 0; }
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+      }
+
+      function formatDuration(hours) {
+        const h = Math.floor(hours);
+        const m = Math.round((hours - h) * 60);
+        return `${h}h ${m}m`;
+      }
+
+      // --- DOM refs ---
+      const latInput = document.getElementById('latitude');
+      const lonInput = document.getElementById('longitude');
+      const dateInput = document.getElementById('date-input');
+      const tzInput = document.getElementById('tz-offset');
+      const locateBtn = document.getElementById('locate-btn');
+      const printBtn = document.getElementById('print-btn');
+
+      // Set defaults
+      const now = new Date();
+      dateInput.value = now.toISOString().slice(0, 10);
+      tzInput.value = -now.getTimezoneOffset() / 60;
+
+      // --- Events ---
+      locateBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) return;
+        locateBtn.textContent = 'Locating\u2026';
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            latInput.value = pos.coords.latitude.toFixed(4);
+            lonInput.value = pos.coords.longitude.toFixed(4);
+            locateBtn.textContent = 'Use my location';
+            update();
+          },
+          () => { locateBtn.textContent = 'Use my location'; }
+        );
+      });
+
+      printBtn.addEventListener('click', () => window.print());
+
+      [latInput, lonInput, dateInput, tzInput].forEach(el =>
+        el.addEventListener('input', update)
+      );
+
+      // --- Main update ---
+      function update() {
+        const lat = parseFloat(latInput.value) || 0;
+        const lon = parseFloat(lonInput.value) || 0;
+        const date = new Date(dateInput.value + 'T12:00:00');
+        const tz = parseFloat(tzInput.value) || 0;
+        const doy = dayOfYear(date);
+
+        const decl = solarDeclination(doy);
+        const eot = equationOfTime(doy);
+        const noon = solarNoon(lon, tz, eot);
+        const ha = sunriseHourAngle(lat, decl);
+        const dayLen = 2 * ha / 15;
+        const sunrise = noon - ha / 15;
+        const sunset = noon + ha / 15;
+
+        // Measurements table
+        document.getElementById('out-gnomon').textContent = `${Math.abs(lat).toFixed(2)}° ${lat >= 0 ? 'N' : 'S'}`;
+        document.getElementById('out-declination').textContent = `${decl >= 0 ? '+' : ''}${decl.toFixed(2)}°`;
+        document.getElementById('out-eot').textContent = `${eot >= 0 ? '+' : ''}${eot.toFixed(2)} min`;
+        document.getElementById('out-noon').textContent = formatTime(noon);
+        document.getElementById('out-rise-set').textContent = `${formatTime(sunrise)} / ${formatTime(sunset)}`;
+        document.getElementById('out-day-length').textContent = formatDuration(dayLen);
+
+        drawDial(lat, date);
+        drawGnomon(lat);
+        drawAnalemma(doy);
+      }
+
+      // --- Dial SVG ---
+      function drawDial(lat, date) {
+        const W = 500, H = 520;
+        const cx = W / 2, cy = 380;
+        const R = 170;
+        const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const latStr = `${Math.abs(lat).toFixed(2)}° ${lat >= 0 ? 'N' : 'S'}`;
+
+        let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="dial-svg">`;
+        svg += `<style>text{font-family:'Source Serif 4',Georgia,serif;fill:#2c2c2c}line,circle,path,rect{stroke:#2c2c2c;fill:none}</style>`;
+
+        // Cartouche (title box)
+        const cartX = cx - 120, cartY = 15, cartW = 240, cartH = 52;
+        svg += `<rect x="${cartX}" y="${cartY}" width="${cartW}" height="${cartH}" stroke-width="0.7"/>`;
+        svg += `<rect x="${cartX + 3}" y="${cartY + 3}" width="${cartW - 6}" height="${cartH - 6}" stroke-width="0.4"/>`;
+        svg += `<text x="${cx}" y="${cartY + 24}" text-anchor="middle" font-size="11" font-weight="500">${latStr}</text>`;
+        svg += `<text x="${cx}" y="${cartY + 42}" text-anchor="middle" font-size="9" font-style="italic">${dateStr}</text>`;
+
+        // Outer semicircle
+        svg += `<path d="M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}" stroke-width="1.5"/>`;
+        // Inner rim
+        const r2 = R - 8;
+        svg += `<path d="M ${cx - r2} ${cy} A ${r2} ${r2} 0 0 1 ${cx + r2} ${cy}" stroke-width="0.4"/>`;
+        // Base line
+        svg += `<line x1="${cx - R - 15}" y1="${cy}" x2="${cx + R + 15}" y2="${cy}" stroke-width="1"/>`;
+        // Gnomon point marker
+        svg += `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#2c2c2c" stroke="none"/>`;
+
+        // Hour lines: -6 to +6 (6AM to 6PM)
+        for (let h = -6; h <= 6; h++) {
+          const angle = hourLineAngle(lat, h);
+          const rad = (90 - angle) * DEG; // angle from noon line (vertical up)
+          const isNoon = h === 0;
+          const isHour = Number.isInteger(h);
+          const sw = isNoon ? 2.5 : isHour ? 1.2 : 0.5;
+          const dash = isHour ? '' : 'stroke-dasharray="3,3"';
+
+          // Line from gnomon point upward into semicircle
+          const len = isHour ? R - 2 : R - 12;
+          const x2 = cx + len * Math.sin(angle * DEG);
+          const y2 = cy - len * Math.cos(angle * DEG);
+          svg += `<line x1="${cx}" y1="${cy}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke-width="${sw}" ${dash}/>`;
+
+          // Hour labels (Roman numerals)
+          if (isHour) {
+            const clockHour = 12 + h; // 6=VI AM, 12=XII, 18=VI PM
+            const romanIdx = ((clockHour % 12) === 0) ? 0 : (clockHour % 12);
+            const label = ROMAN[romanIdx];
+            const labelR = R + 14;
+            const lx = cx + labelR * Math.sin(angle * DEG);
+            const ly = cy - labelR * Math.cos(angle * DEG);
+            const fontSize = isNoon ? 13 : 10;
+            svg += `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" text-anchor="middle" dominant-baseline="central" font-size="${fontSize}">${label}</text>`;
+          }
+        }
+
+        // Half-hour lines
+        for (let h = -5.5; h <= 5.5; h += 1) {
+          const angle = hourLineAngle(lat, h);
+          const len = R - 12;
+          const x2 = cx + len * Math.sin(angle * DEG);
+          const y2 = cy - len * Math.cos(angle * DEG);
+          svg += `<line x1="${cx}" y1="${cy}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+        }
+
+        // Compass rose (small, bottom-right)
+        const crx = cx + R + 40, cry = cy - 30;
+        const crR = 16;
+        svg += `<line x1="${crx}" y1="${cry - crR}" x2="${crx}" y2="${cry + crR}" stroke-width="0.8"/>`;
+        svg += `<line x1="${crx - crR}" y1="${cry}" x2="${crx + crR}" y2="${cry}" stroke-width="0.8"/>`;
+        // Arrow on N
+        svg += `<polygon points="${crx},${cry - crR - 4} ${crx - 3},${cry - crR + 4} ${crx + 3},${cry - crR + 4}" fill="#2c2c2c" stroke="none"/>`;
+        svg += `<text x="${crx}" y="${cry - crR - 8}" text-anchor="middle" font-size="8" font-weight="600">N</text>`;
+        svg += `<text x="${crx}" y="${cry + crR + 12}" text-anchor="middle" font-size="7" font-style="italic">S</text>`;
+
+        // Noon line label
+        svg += `<text x="${cx + 8}" y="${cy - R + 20}" font-size="7" font-style="italic" fill="#2c2c2c">noon</text>`;
+
+        svg += `</svg>`;
+        document.getElementById('dial-container').innerHTML = svg;
+      }
+
+      // --- Gnomon SVG ---
+      function drawGnomon(lat) {
+        const W = 400, H = 250;
+        const margin = 50;
+        const baseLen = 180;
+        const heightLen = baseLen * Math.tan(lat * DEG);
+        const hypLen = baseLen / Math.cos(lat * DEG);
+
+        // Scale to fit
+        const maxH = H - margin * 2;
+        const maxW = W - margin * 2;
+        const scale = Math.min(maxW / baseLen, maxH / Math.max(heightLen, 10));
+        const bx = margin;
+        const by = H - margin;
+        const base = baseLen * Math.min(scale, 1);
+        const ht = heightLen * Math.min(scale, 1);
+
+        let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="gnomon-svg">`;
+        svg += `<style>text{font-family:'Source Serif 4',Georgia,serif;fill:#2c2c2c}line,path,polygon{stroke:#2c2c2c;fill:none}</style>`;
+
+        // Triangle: right angle at bottom-left
+        const ax = bx, ay = by;          // bottom-left (right angle)
+        const bxp = bx + base, byp = by; // bottom-right
+        const txp = bx, typ = by - ht;   // top-left
+
+        svg += `<polygon points="${ax},${ay} ${bxp},${byp} ${txp},${typ}" stroke-width="1.5" stroke-dasharray="8,4"/>`;
+
+        // Right angle marker
+        const sq = 12;
+        svg += `<path d="M ${ax + sq},${ay} L ${ax + sq},${ay - sq} L ${ax},${ay - sq}" stroke-width="0.7"/>`;
+
+        // Angle arc at bottom-right (latitude angle)
+        const arcR = 30;
+        const angRad = Math.atan2(ht, base);
+        const arcX = bxp - arcR * Math.cos(angRad);
+        const arcY = byp - arcR * Math.sin(angRad);
+        svg += `<path d="M ${bxp - arcR},${byp} A ${arcR} ${arcR} 0 0 0 ${arcX.toFixed(2)},${arcY.toFixed(2)}" stroke-width="0.7"/>`;
+        svg += `<text x="${bxp - arcR - 12}" y="${byp - 8}" font-size="9" font-style="italic">${Math.abs(lat).toFixed(1)}°</text>`;
+
+        // Dimension labels
+        svg += `<text x="${(ax + bxp) / 2}" y="${ay + 20}" text-anchor="middle" font-size="9">base</text>`;
+        svg += `<text x="${ax - 18}" y="${(ay + typ) / 2}" text-anchor="middle" font-size="9" transform="rotate(-90,${ax - 18},${(ay + typ) / 2})">height</text>`;
+        // Hypotenuse label
+        const hMidX = (bxp + txp) / 2 + 10;
+        const hMidY = (byp + typ) / 2;
+        const hAng = -Math.atan2(ht, base) * RAD;
+        svg += `<text x="${hMidX}" y="${hMidY}" font-size="9" font-style="italic" transform="rotate(${hAng.toFixed(1)},${hMidX},${hMidY})">hypotenuse</text>`;
+
+        // Cut/fold instructions
+        svg += `<text x="${W - margin}" y="${margin - 10}" text-anchor="end" font-size="8" font-style="italic">Cut along dashed line. Fold along base.</text>`;
+
+        svg += `</svg>`;
+        document.getElementById('gnomon-container').innerHTML = svg;
+      }
+
+      // --- Analemma SVG ---
+      function drawAnalemma(currentDoy) {
+        const W = 360, H = 400;
+        const cx = W / 2, cy = H / 2;
+        const scaleX = 7;   // pixels per minute of EoT
+        const scaleY = 6;   // pixels per degree of declination
+
+        let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="analemma-svg">`;
+        svg += `<style>text{font-family:'Source Serif 4',Georgia,serif;fill:#2c2c2c}line,circle,path{stroke:#2c2c2c;fill:none}</style>`;
+
+        // Axes
+        svg += `<line x1="${cx}" y1="20" x2="${cx}" y2="${H - 20}" stroke-width="0.4"/>`;
+        svg += `<line x1="30" y1="${cy}" x2="${W - 30}" y2="${cy}" stroke-width="0.4"/>`;
+        // Axis labels
+        svg += `<text x="${W - 28}" y="${cy - 6}" font-size="7" font-style="italic">EoT (min)</text>`;
+        svg += `<text x="${cx + 6}" y="28" font-size="7" font-style="italic">Decl. (°)</text>`;
+
+        // Tick marks on EoT axis
+        for (let m = -15; m <= 15; m += 5) {
+          if (m === 0) continue;
+          const x = cx + m * scaleX;
+          svg += `<line x1="${x}" y1="${cy - 3}" x2="${x}" y2="${cy + 3}" stroke-width="0.4"/>`;
+          svg += `<text x="${x}" y="${cy + 14}" text-anchor="middle" font-size="6">${m > 0 ? '+' : ''}${m}</text>`;
+        }
+        // Tick marks on declination axis
+        for (let d = -20; d <= 20; d += 10) {
+          if (d === 0) continue;
+          const y = cy - d * scaleY;
+          svg += `<line x1="${cx - 3}" y1="${y}" x2="${cx + 3}" y2="${y}" stroke-width="0.4"/>`;
+          svg += `<text x="${cx - 10}" y="${y + 3}" text-anchor="end" font-size="6">${d > 0 ? '+' : ''}${d}°</text>`;
+        }
+
+        // Plot analemma curve
+        const points = [];
+        for (let d = 1; d <= 365; d++) {
+          const eot = equationOfTime(d);
+          const decl = solarDeclination(d);
+          const x = cx + eot * scaleX;
+          const y = cy - decl * scaleY;
+          points.push({ x, y, doy: d });
+        }
+
+        let pathD = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+        for (let i = 1; i < points.length; i++) {
+          pathD += ` L ${points[i].x.toFixed(2)} ${points[i].y.toFixed(2)}`;
+        }
+        pathD += ' Z';
+        svg += `<path d="${pathD}" stroke-width="1.2"/>`;
+
+        // Month labels (1st of each month)
+        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const monthDoys = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
+        for (let i = 0; i < 12; i++) {
+          const d = monthDoys[i];
+          const eot = equationOfTime(d);
+          const decl = solarDeclination(d);
+          const x = cx + eot * scaleX;
+          const y = cy - decl * scaleY;
+          svg += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2" fill="#2c2c2c" stroke="none"/>`;
+          // Offset label to avoid overlap
+          const offsetX = eot > 0 ? 8 : -8;
+          const anchor = eot > 0 ? 'start' : 'end';
+          svg += `<text x="${(x + offsetX).toFixed(2)}" y="${(y + 3).toFixed(2)}" text-anchor="${anchor}" font-size="7">${monthNames[i]}</text>`;
+        }
+
+        // Mark current date
+        if (currentDoy >= 1 && currentDoy <= 365) {
+          const eot = equationOfTime(currentDoy);
+          const decl = solarDeclination(currentDoy);
+          const x = cx + eot * scaleX;
+          const y = cy - decl * scaleY;
+          svg += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="4" stroke-width="1.5" fill="none"/>`;
+        }
+
+        svg += `</svg>`;
+        document.getElementById('analemma-container').innerHTML = svg;
+      }
+
+      // Initial render
+      update();
+    })();
+  </script>
+</body>
+
+<style>
+  :root {
+    --ink: #2c2c2c;
+    --slate: #6b7280;
+    --hairline: #d0d0d0;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-mono: 'Courier New', monospace;
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-serif);
+    background: #fff;
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+  }
+
+  /* Back nav */
+  .back-nav {
+    padding: var(--space-sm) var(--space-lg);
+  }
+
+  .back-link {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: var(--slate);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover {
+    color: var(--ink);
+  }
+
+  /* Header */
+  .page-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: var(--space-xs);
+  }
+
+  .page-subtitle {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--slate);
+    margin-bottom: var(--space-md);
+  }
+
+  .hairline {
+    border: none;
+    border-top: 0.5px solid var(--hairline);
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 0.5px solid var(--hairline);
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .section-note {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--slate);
+    margin-bottom: var(--space-md);
+  }
+
+  /* Inputs */
+  .inputs-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .input-row {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-sm);
+  }
+
+  .input-group {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--slate);
+    margin-bottom: 0.25rem;
+  }
+
+  .input-group input {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--hairline);
+    padding: 0.4rem 0;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-bottom-color: var(--ink);
+  }
+
+  .button-row {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: var(--slate);
+    background: transparent;
+    border: 1px solid var(--hairline);
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  button:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  /* Measurements table */
+  .measurements-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ledger-table tr {
+    border-bottom: 0.5px solid var(--hairline);
+  }
+
+  .ledger-table td {
+    padding: 0.5rem 0;
+  }
+
+  .ledger-table .label {
+    font-variant: small-caps;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    color: var(--slate);
+  }
+
+  .ledger-table .value {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    text-align: right;
+  }
+
+  /* SVG containers */
+  .svg-container {
+    width: 100%;
+    margin-bottom: var(--space-md);
+  }
+
+  .svg-container svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .dial-section,
+  .gnomon-section,
+  .analemma-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 0.5px solid var(--hairline);
+    padding: var(--space-md) var(--space-lg);
+    text-align: center;
+  }
+
+  .footer-link {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: var(--slate);
+    text-decoration: none;
+  }
+
+  .footer-link:hover {
+    color: var(--ink);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container {
+      padding: var(--space-sm);
+    }
+
+    .page-title {
+      font-size: 2.2rem;
+    }
+
+    .input-row {
+      flex-direction: column;
+    }
+
+    .input-group {
+      min-width: 100%;
+    }
+
+    .input-group input {
+      font-size: 16px; /* prevent iOS zoom */
+      padding: 0.6rem 0;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Print */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    body {
+      font-size: 11pt;
+    }
+
+    .container {
+      max-width: none;
+      padding: 0;
+    }
+
+    .svg-container svg {
+      max-width: 18cm;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .gnomon-section {
+      page-break-before: always;
+    }
+
+    .analemma-section {
+      page-break-before: always;
+    }
+
+    .measurements-section {
+      page-break-inside: avoid;
+    }
+  }
+</style>
+</html>
