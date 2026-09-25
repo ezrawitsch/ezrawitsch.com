@@ -11,244 +11,166 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
   <title>{pageTitle}</title>
   <meta name="description" content={pageDescription}>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  
-  <!-- Google Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <!-- Terrain Background -->
-  <div id="terrain-bg" class="terrain-bg" aria-hidden="true"></div>
-  
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-content">
-      <a href="#about" class="nav-link">About</a>
-      <a href="#book" class="nav-link">Book</a>
-      <a href="#work" class="nav-link">Work</a>
-      <a href="#writing" class="nav-link">Writing</a>
-      <a href="#contact" class="nav-link">Contact</a>
-    </div>
-  </nav>
+  <div class="terrain-bg" aria-hidden="true"></div>
 
-  <main class="container">
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-      <a href="https://www.openstreetmap.org/#map=15/51.4700/-0.1183" class="coordinates" target="_blank" rel="noopener noreferrer">51°28'12"N 0°07'06"W</a>
-      <h1 class="hero-title">Ezra Rawitsch</h1>
-      <p class="hero-subtitle">I make maps and digital tools to see places from a new perspective, and I write about the intersection of geography, politics, and technology.</p>
+  <main class="page">
+    <header class="masthead">
+      <h1>Ezra Rawitsch</h1>
+      <p class="lede">I make maps and digital tools to see places from a new perspective, and I write about the intersection of geography, politics, and technology.</p>
+      <nav class="nav">
+        <a href="#about">About</a>
+        <a href="#book">Book</a>
+        <a href="#work">Work</a>
+        <a href="#writing">Writing</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>About</h2>
+      <p>I work at <a href="https://thebusinessofcities.com" target="_blank" rel="noopener noreferrer">The Business of Cities</a>, a cities research and strategy firm, where I build the benchmarking and data visualizations cities use to understand how they compare.</p>
+      <p>I studied on a Morehead-Cain scholarship at UNC Chapel Hill, and at KU Leuven and Vrije Universiteit Brussel in Belgium. I've lived in five cities in three countries but: <a href="https://www.youtube.com/watch?v=KcADqxnQA_4&list=RDKcADqxnQA_4&start_radio=1" target="_blank" rel="noopener noreferrer">I Love L.A.</a> My first book comes out in November.</p>
     </section>
 
-    <!-- About Section -->
-    <section class="section" id="about">
-      <div class="section-header">
-        <h2 class="section-title">About</h2>
-      </div>
-      
-      <div class="section-content">
-        <p>Housing, borders, migration, and belonging keep returning in what I read, map, and build.</p>
+    <section id="book">
+      <h2>Book</h2>
 
-        <p>I work at <a href="https://thebusinessofcities.com" target="_blank" rel="noopener noreferrer">The Business of Cities</a>, a cities research and strategy firm, where I build the benchmarking and data visualizations cities use to understand how they compare.</p>
-        
-        <p>I studied on a Morehead-Cain scholarship at UNC Chapel Hill, and at KU Leuven and Vrije Universiteit Brussel in Belgium. I've lived in five cities in three countries but: <a href="https://www.youtube.com/watch?v=KcADqxnQA_4&list=RDKcADqxnQA_4&start_radio=1" target="_blank" rel="noopener noreferrer">I Love L.A.</a> My first book comes out in November.</p>
-      </div>
-    </section>
+      <div class="book">
+        <a class="book-cover" href="https://southland.ezrawitsch.com" target="_blank" rel="noopener noreferrer">
+          <picture>
+            <source srcset="/southland/cover.webp" type="image/webp">
+            <img src="/southland/cover.jpg" width="1200" height="1553" loading="lazy"
+                 alt="Cover of Visions of the Southland: A Year in Los Angeles County">
+          </picture>
+        </a>
 
-    <!-- Book Section -->
-    <section class="section" id="book">
-      <div class="section-header">
-        <h2 class="section-title">Book</h2>
-      </div>
-      
-      <div class="section-content">
-        <div class="book-info">
-          <h3 class="book-title">Visions of the Southland: A Year in Los Angeles County</h3>
-          <p class="book-publisher">University of Chicago Press</p>
-          <p class="book-credit">Edited by Wade Graham &amp; William Deverell · Maps by Ezra Rawitsch</p>
-          
-          <p>Thirty-six essays trace a single year in Los Angeles County — its glitter and its grit, from water and air to music, prisons, transit, and art — by writers including Gustavo Arellano, Lynell George, Christopher Hawthorne, Carolina A. Miranda, Susan Straight, and David L. Ulin. I researched and designed the book's thirty maps, grounding each essay in the County's rivers and faults, its fires and freeways, and the patterns you can't otherwise see.</p>
-
-          <p class="book-link"><a href="https://southland.ezrawitsch.com" target="_blank" rel="noopener noreferrer">southland.ezrawitsch.com →</a></p>
-
-          <div class="book-status">
-            <span class="status-indicator"></span>
-            <span class="status-text">November 2026</span>
-          </div>
+        <div class="book-text">
+          <h3><cite>Visions of the Southland: A Year in Los Angeles County</cite></h3>
+          <p class="meta">Edited by Wade Graham and William Deverell, maps by Ezra Rawitsch. University of Chicago Press, 30 November 2026.</p>
+          <p>Thirty-six essays trace a single year in Los Angeles County, its glitter and its grit, from water and air to music, prisons, transit, and art, by writers including Gustavo Arellano, Lynell George, Christopher Hawthorne, Carolina A. Miranda, Susan Straight, and David L. Ulin. I researched and designed the book's thirty maps, grounding each essay in the County's rivers and faults, its fires and freeways, and the patterns you can't otherwise see.</p>
+          <p><a href="https://southland.ezrawitsch.com" target="_blank" rel="noopener noreferrer">More about the book at southland.ezrawitsch.com</a></p>
         </div>
       </div>
-    </section>
 
-    <!-- Work Section -->
-    <section class="section" id="work">
-      <div class="section-header">
-        <h2 class="section-title">Work</h2>
-      </div>
-      
-      <div class="section-content">
-        <div class="work-grid">
-          <div class="work-item">
-            <h3 class="work-title">Perth's Prospects</h3>
-            <p class="work-description">The first purpose-built global benchmarking of Greater Perth, commissioned by Infrastructure WA. Situates Perth and Peel Region against peer cities worldwide to inform long-term infrastructure and growth strategy.</p>
-            <div class="work-type">Infrastructure WA · 2025</div>
-          </div>
-          
-          <a href="https://committeeforbrisbane.org.au/wp-content/uploads/2025/03/Benchmarking-SEQ-Web-1.pdf" class="work-item" target="_blank" rel="noopener noreferrer">
-            <h3 class="work-title">Benchmarking South East Queensland</h3>
-            <p class="work-description">Global benchmarking of SEQ ahead of the Brisbane 2032 Games, comparing the region across productivity, transport, liveability, and innovation against peer metro regions worldwide.</p>
-            <div class="work-type">Council of Mayors SEQ · 2024–2025</div>
-          </a>
-          
-          <a href="https://thebusinessofcities.com/work/" class="work-item" target="_blank" rel="noopener noreferrer">
-            <h3 class="work-title">More projects at The Business of Cities</h3>
-            <p class="work-description">Benchmarking, strategy, and research for cities, investment agencies, and development banks worldwide. See the full portfolio.</p>
-            <div class="work-type">thebusinessofcities.com/work →</div>
-          </a>
-          
-          <a href="https://ezrawitsch.github.io/wikipedia_list_v2.html" class="work-item" target="_blank" rel="noopener noreferrer">
-            <h3 class="work-title">Wikipedia Map</h3>
-            <p class="work-description">An interactive map of Wikipedia articles by location. Search, browse, and read the encyclopedia geographically.</p>
-            <div class="work-type">Side project · ezrawitsch.github.io →</div>
-          </a>
-          
-          <a href="https://www.euki.de/wp-content/uploads/2024/07/SUNRISE-Project-Financing-for-Prosumer-Renewable-Energy-in-Lithuania-North-Macedonia-and-Bulgaria-November-2023-1.pdf" class="work-item" target="_blank" rel="noopener noreferrer">
-            <h3 class="work-title">Financing Prosumer Renewable Energy in Lithuania, North Macedonia, and Bulgaria</h3>
-            <p class="work-description">Policy paper on enabling citizen-led renewable energy across three European states.</p>
-            <div class="work-type">EUKI · German Federal Ministry for Economic Affairs and Climate Action · 2023</div>
-          </a>
-          
-          <a href="https://carolinacartography.org" class="work-item" target="_blank" rel="noopener noreferrer">
-            <h3 class="work-title">Carolina Cartography</h3>
-            <p class="work-description">Mapping, narrative, and human geography. New perspectives on spaces, places, and geographic difference.</p>
-            <div class="work-type">carolinacartography.org →</div>
-          </a>
-        </div>
+      <figure class="maps">
+        <picture>
+          <source srcset="/southland/maps-banner.webp" type="image/webp">
+          <img src="/southland/maps-banner.jpg" width="3000" height="1160" loading="lazy"
+               alt="Five maps from the book: LA County at the scale of other cities and states, citrus country and public health, water and aqueduct infrastructure, and fires along the San Andreas Fault.">
+        </picture>
+        <figcaption>Five of the thirty maps: the County's scale against other places, citrus country and public health, the water system, and faults and fires.</figcaption>
+      </figure>
+
+      <div class="order">
+        <h3>Preorder</h3>
+        <dl>
+          <dt>United States</dt>
+          <dd>
+            <a href="https://press.uchicago.edu/ucp/books/book/chicago/V/bo271357767.html" target="_blank" rel="noopener noreferrer">University of Chicago Press</a>,
+            <a href="https://www.amazon.com/Visions-Southland-Year-Angeles-County/dp/0226829022" target="_blank" rel="noopener noreferrer">Amazon</a>
+          </dd>
+          <dt>United Kingdom</dt>
+          <dd>
+            <a href="https://www.waterstones.com/book/visions-of-the-southland/wade-graham/william-deverell/9780226829029" target="_blank" rel="noopener noreferrer">Waterstones</a>,
+            <a href="https://www.amazon.co.uk/Visions-Southland-Year-Angeles-County/dp/0226829022" target="_blank" rel="noopener noreferrer">Amazon UK</a>
+          </dd>
+          <dt>Canada</dt>
+          <dd>
+            <a href="https://www.indigo.ca/products/visions-of-the-southland-a-year-in-los-angeles-county?variant=46803588186322" target="_blank" rel="noopener noreferrer">Indigo</a>,
+            <a href="https://www.amazon.ca/Visions-Southland-Year-Angeles-County/dp/0226829022" target="_blank" rel="noopener noreferrer">Amazon Canada</a>
+          </dd>
+        </dl>
+        <p class="meta">Or ask your local bookshop or library to order it (ISBN 978-0-226-82902-9).</p>
       </div>
     </section>
 
-    <!-- Writing Section -->
-    <section class="section" id="writing">
-      <div class="section-header">
-        <h2 class="section-title">Writing</h2>
-      </div>
-      
-      <div class="section-content">
-        <div class="writing-list">
-          <a href="https://kuleuven.limo.libis.be/discovery/fulldisplay?docid=alma9994890984001488&context=L&vid=32KUL_KUL:KULeuven&search_scope=All_Content&tab=all_content_tab&lang=en" class="writing-item" target="_blank" rel="noopener noreferrer">
-            <div class="writing-type">Academic · 2024</div>
-            <h3 class="writing-title">Coalition Cartography: Mapping Urban Governance and Transportation in 20th-Century California</h3>
-            <p class="writing-venue">KU Leuven · LAGT Award for the Best Thesis in Geography</p>
-          </a>
-          
-          <a href="https://www.ceeol.com/search/article-detail?id=903160" class="writing-item" target="_blank" rel="noopener noreferrer">
-            <div class="writing-type">Academic · 2020</div>
-            <h3 class="writing-title">Seeing Sapa: Reading a Transnational Marketplace in the Post-Socialist Cityscape</h3>
-            <p class="writing-venue">Lidé města · Urban People · Charles University</p>
-          </a>
-          
-          <div class="writing-item writing-item--audio">
-            <div class="writing-type">Audio Essay</div>
-            <h3 class="writing-title">In the Musicality of the Moment</h3>
-            <p class="writing-venue"><a href="https://soundcloud.com/ezrawitsch" target="_blank" rel="noopener noreferrer">SoundCloud</a></p>
-            <div class="soundcloud-embed">
-              <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ezrawitsch/in-the-musicality-of-the-moment&color=%23458585&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-            </div>
-          </div>
-          
-          <a href="https://carolinaangles.com/2018/10/18/reflections-on-a-prague-bazaar/" class="writing-item" target="_blank" rel="noopener noreferrer">
-            <div class="writing-type">Essay · 2018</div>
-            <h3 class="writing-title">Reflections on a Prague Bazaar</h3>
-            <p class="writing-venue">Carolina Angles</p>
-          </a>
-        </div>
-      </div>
+    <section id="work">
+      <h2>Work</h2>
+      <ul class="entries">
+        <li>
+          <h3>Perth's Prospects</h3>
+          <p>The first purpose-built global benchmarking of Greater Perth, commissioned by Infrastructure WA. Situates Perth and Peel Region against peer cities worldwide to inform long-term infrastructure and growth strategy.</p>
+          <p class="meta">Infrastructure WA, 2025</p>
+        </li>
+        <li>
+          <h3><a href="https://committeeforbrisbane.org.au/wp-content/uploads/2025/03/Benchmarking-SEQ-Web-1.pdf" target="_blank" rel="noopener noreferrer">Benchmarking South East Queensland</a></h3>
+          <p>Global benchmarking of SEQ ahead of the Brisbane 2032 Games, comparing the region across productivity, transport, liveability, and innovation against peer metro regions worldwide.</p>
+          <p class="meta">Council of Mayors SEQ, 2024 to 2025</p>
+        </li>
+        <li>
+          <h3><a href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer">Placeview</a></h3>
+          <p>A place-analysis tool I'm building. Draw an area anywhere in thirteen metros, from London to Los Angeles, and see what's inside it, measured on a 100-metre grid.</p>
+          <p class="meta">Side project, placeview.org</p>
+        </li>
+        <li>
+          <h3><a href="https://www.euki.de/wp-content/uploads/2024/07/SUNRISE-Project-Financing-for-Prosumer-Renewable-Energy-in-Lithuania-North-Macedonia-and-Bulgaria-November-2023-1.pdf" target="_blank" rel="noopener noreferrer">Financing Prosumer Renewable Energy in Lithuania, North Macedonia, and Bulgaria</a></h3>
+          <p>Policy paper on enabling citizen-led renewable energy across three European states.</p>
+          <p class="meta">EUKI, German Federal Ministry for Economic Affairs and Climate Action, 2023</p>
+        </li>
+        <li>
+          <h3><a href="https://carolinacartography.org" target="_blank" rel="noopener noreferrer">Carolina Cartography</a></h3>
+          <p>Mapping, narrative, and human geography. New perspectives on spaces, places, and geographic difference.</p>
+          <p class="meta">carolinacartography.org</p>
+        </li>
+      </ul>
+      <p class="more">More of my projects are in <a href="https://thebusinessofcities.com/work/" target="_blank" rel="noopener noreferrer">The Business of Cities portfolio</a>.</p>
     </section>
 
-    <!-- Contact Section -->
-    <section class="section" id="contact">
-      <div class="section-header">
-        <h2 class="section-title">Contact</h2>
-      </div>
-      
-      <div class="section-content">
-        <div class="contact-grid">
-          <div class="contact-item">
-            <h3 class="contact-method">Email</h3>
-            <a href="mailto:ezrawitsch@gmail.com" class="contact-link">ezrawitsch@gmail.com</a>
-          </div>
-          
-          <div class="contact-item">
-            <h3 class="contact-method">LinkedIn</h3>
-            <a href="https://linkedin.com/in/ezrawitsch" class="contact-link" target="_blank" rel="noopener noreferrer">@ezrawitsch</a>
-          </div>
-
-          <div class="contact-item">
-            <h3 class="contact-method">Substack</h3>
-            <a href="https://departmentofgeography.substack.com" class="contact-link" target="_blank" rel="noopener noreferrer">Department of Geography</a>
-          </div>
-        </div>
-      </div>
+    <section id="writing">
+      <h2>Writing</h2>
+      <ul class="entries">
+        <li>
+          <h3><a href="https://kuleuven.limo.libis.be/discovery/fulldisplay?docid=alma9994890984001488&context=L&vid=32KUL_KUL:KULeuven&search_scope=All_Content&tab=all_content_tab&lang=en" target="_blank" rel="noopener noreferrer">Coalition Cartography: Mapping Urban Governance and Transportation in 20th-Century California</a></h3>
+          <p class="meta">Thesis, KU Leuven, 2024. LAGT Award for the Best Thesis in Geography.</p>
+        </li>
+        <li>
+          <h3><a href="https://www.ceeol.com/search/article-detail?id=903160" target="_blank" rel="noopener noreferrer">Seeing Sapa: Reading a Transnational Marketplace in the Post-Socialist Cityscape</a></h3>
+          <p class="meta">Lidé města / Urban People, Charles University, 2020</p>
+        </li>
+        <li>
+          <h3>In the Musicality of the Moment</h3>
+          <p class="meta">Audio essay, <a href="https://soundcloud.com/ezrawitsch" target="_blank" rel="noopener noreferrer">SoundCloud</a></p>
+          <iframe class="soundcloud" title="In the Musicality of the Moment on SoundCloud" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ezrawitsch/in-the-musicality-of-the-moment&color=%23458585&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+        </li>
+        <li>
+          <h3><a href="https://carolinaangles.com/2018/10/18/reflections-on-a-prague-bazaar/" target="_blank" rel="noopener noreferrer">Reflections on a Prague Bazaar</a></h3>
+          <p class="meta">Essay, Carolina Angles, 2018</p>
+        </li>
+      </ul>
     </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>
+        <a href="mailto:ezrawitsch@gmail.com">ezrawitsch@gmail.com</a><br>
+        <a href="https://linkedin.com/in/ezrawitsch" target="_blank" rel="noopener noreferrer">LinkedIn</a>,
+        and I write <a href="https://departmentofgeography.substack.com" target="_blank" rel="noopener noreferrer">Department of Geography</a> on Substack.
+      </p>
+    </section>
+
+    <footer class="footer">
+      <p>© 2026 Ezra Rawitsch. Written from <a href="https://www.openstreetmap.org/#map=15/51.4700/-0.1183" target="_blank" rel="noopener noreferrer">51°28′N 0°07′W</a>.</p>
+    </footer>
   </main>
-
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-coordinates" aria-hidden="true">© 2026</div>
-      <p class="footer-text">Ezra Rawitsch</p>
-    </div>
-  </footer>
-
-  <script>
-    (() => {
-      const bg = document.getElementById('terrain-bg');
-      if (!bg) return;
-
-      let ticking = false;
-
-      const updateBackgroundPosition = () => {
-        const doc = document.documentElement;
-        const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
-        const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-        bg.style.backgroundPosition = `center ${progress * 100}%`;
-        ticking = false;
-      };
-
-      const requestUpdate = () => {
-        if (!ticking) {
-          window.requestAnimationFrame(updateBackgroundPosition);
-          ticking = true;
-        }
-      };
-
-      window.addEventListener('scroll', requestUpdate, { passive: true });
-      window.addEventListener('resize', requestUpdate);
-      requestUpdate();
-    })();
-  </script>
 </body>
 
 <style>
   :root {
-    --cream: #faf8f3;
-    --cream-light: #fefcf9;
+    --paper: #faf8f3;
     --ink: #2c2c2c;
-    --slate: #6b7280;
-    --teal: #458585;
-    --teal-light: #5a9999;
-    --grid-color: #f0ede6;
-    --accent-line: #e5e1d8;
-    
-    --font-serif: 'Source Serif 4', Georgia, serif;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    
-    --space-xs: 0.5rem;
-    --space-sm: 1rem;
-    --space-md: 1.5rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
-    --space-2xl: 4rem;
-    --space-3xl: 4rem;
+    --grey: #5f6368;
+    --teal: #3a7676;
+    --rule: #e2ddd2;
+
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   * {
@@ -262,473 +184,239 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
   }
 
   body {
-    font-family: var(--font-sans);
-    background-color: var(--cream);
-    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
     line-height: 1.6;
-    font-size: 16px;
-    position: relative;
-    overflow-x: hidden;
+    color: var(--ink);
+    background-color: var(--paper);
   }
 
-  /* Terrain Background */
   .terrain-bg {
     position: fixed;
     inset: 0;
-    background-image: url('/terrain.jpg');
-    background-size: cover;
-    background-position: center 0%;
-    background-repeat: no-repeat;
+    background: url('/terrain.jpg') center / cover no-repeat;
+    opacity: 0.35;
     pointer-events: none;
     z-index: -1;
-    will-change: background-position;
   }
 
-  /* Navigation */
-  .nav {
-    position: fixed;
-    top: var(--space-sm);
-    right: var(--space-lg);
-    z-index: 100;
-    background: rgba(250, 248, 243, 0.9);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--accent-line);
-    border-radius: 2px;
-    padding: var(--space-xs);
-  }
-
-  .nav-content {
-    display: flex;
-    gap: var(--space-sm);
-  }
-
-  .nav-link {
-    color: var(--slate);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 400;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: 2px;
-    transition: color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .nav-link:hover {
-    color: var(--teal);
-    background-color: var(--cream-light);
-  }
-
-  /* Layout */
-  .container {
-    max-width: 900px;
+  .page {
+    max-width: 720px;
     margin: 0 auto;
-    padding: var(--space-lg) var(--space-lg) var(--space-2xl);
+    padding: 4rem 1.5rem 3rem;
+    background: var(--paper);
+    min-height: 100vh;
   }
 
-  /* Hero Section */
-  .hero {
-    padding: var(--space-lg) 0 var(--space-sm);
-    position: relative;
-  }
-
-  .coordinates {
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
-    color: var(--slate);
-    margin-bottom: var(--space-sm);
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    display: inline-block;
-    transition: color 0.2s ease;
-  }
-
-  a.coordinates:hover {
+  a {
     color: var(--teal);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
   }
 
-  .hero-title {
-    font-family: var(--font-serif);
-    font-size: 3.5rem;
-    font-weight: 400;
+  a:hover {
     color: var(--ink);
-    margin-bottom: var(--space-sm);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-
-  .hero-subtitle {
-    font-size: 1.15rem;
-    color: var(--slate);
-    max-width: 500px;
-    font-weight: 400;
-    line-height: 1.5;
-  }
-
-  /* Sections */
-  .section {
-    margin: var(--space-2xl) 0;
-    position: relative;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--accent-line);
-  }
-
-  .section-title {
-    font-family: var(--font-serif);
-    font-size: 2.2rem;
-    font-weight: 400;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-  }
-
-  .section-content {
-    max-width: 700px;
-  }
-
-  .section-content a {
-    color: var(--teal);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
-  }
-
-  .section-content a:hover {
-    border-bottom-color: var(--teal);
-  }
-
-  .section-intro {
-    font-size: 1.05rem;
-    color: var(--slate);
-    margin-bottom: var(--space-lg);
-  }
-
-  .section-intro a {
-    color: var(--teal);
   }
 
   p {
-    margin-bottom: var(--space-md);
-    color: var(--slate);
-    line-height: 1.7;
+    margin-bottom: 1rem;
   }
 
-  p:last-child {
-    margin-bottom: 0;
+  .meta,
+  .nav,
+  figcaption,
+  .footer {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--grey);
   }
 
-  /* Book Section */
-  .book-info {
-    background: var(--cream-light);
-    padding: var(--space-xl);
-    border: 1px solid var(--accent-line);
-    position: relative;
+  /* Masthead */
+  .masthead h1 {
+    font-size: 2.6rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 1rem;
   }
 
-  .book-info::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--teal);
+  .lede {
+    font-size: 1.15rem;
+    color: var(--grey);
   }
 
-  .book-title {
-    font-family: var(--font-serif);
-    font-size: 1.4rem;
-    color: var(--ink);
-    margin-bottom: var(--space-xs);
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .nav a {
+    color: var(--grey);
+    text-decoration: none;
+  }
+
+  .nav a:hover {
+    color: var(--teal);
+  }
+
+  /* Sections */
+  section {
+    margin-top: 3.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 0.85rem;
     font-weight: 500;
+    color: var(--grey);
+    margin-bottom: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: 0.4rem;
+  }
+
+  h3 a {
+    color: var(--ink);
+  }
+
+  h3 a:hover {
+    color: var(--teal);
+  }
+
+  /* Book */
+  .book {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1.75rem;
+    align-items: start;
+  }
+
+  .book-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  }
+
+  .book h3 cite {
     font-style: italic;
   }
 
-  .book-publisher {
-    color: var(--teal);
-    font-weight: 500;
-    margin-bottom: var(--space-xs);
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
+  .book .meta {
+    margin-bottom: 1rem;
   }
 
-  .book-credit {
-    font-size: 0.9rem;
-    color: var(--slate);
-    margin-bottom: var(--space-lg) !important;
+  .maps {
+    margin: 2rem 0 0;
   }
 
-  .book-status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-    margin-top: var(--space-lg);
-  }
-
-  .status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--teal);
-  }
-
-  .status-text {
-    font-size: 0.9rem;
-    color: var(--teal);
-    font-weight: 500;
-  }
-
-  /* Work Section */
-  .work-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-lg);
-    margin-top: var(--space-lg);
-  }
-
-  .work-item,
-  a.work-item {
+  .maps img {
     display: block;
-    background: var(--cream-light);
-    padding: var(--space-lg);
-    border: 1px solid var(--accent-line);
-    position: relative;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  a.work-item:hover {
-    transform: translateY(-2px);
-    border-color: var(--teal);
-    border-bottom-color: var(--teal);
-  }
-
-  .work-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(to right, var(--teal), transparent);
+    height: auto;
   }
 
-  .work-title {
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    color: var(--ink);
-    margin-bottom: var(--space-sm);
-    font-weight: 500;
+  figcaption {
+    margin-top: 0.5rem;
   }
 
-  .work-description {
-    font-size: 0.95rem;
-    margin-bottom: var(--space-md);
+  .order {
+    margin-top: 2rem;
   }
 
-  .work-type {
-    font-size: 0.8rem;
-    color: var(--teal);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  .order dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.3rem 1.5rem;
+    margin-bottom: 1rem;
   }
 
-  /* Writing Section */
-  .writing-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
+  .order dt {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--grey);
+    padding-top: 0.15rem;
   }
 
-  .writing-item,
-  a.writing-item {
-    display: block;
-    background: var(--cream-light);
-    padding: var(--space-md) var(--space-lg);
-    border: 1px solid var(--accent-line);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s ease;
+  /* Lists of work and writing */
+  .entries {
+    list-style: none;
   }
 
-  a.writing-item:hover {
-    border-color: var(--teal);
-    border-bottom-color: var(--teal);
+  .entries li {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--rule);
   }
 
-  .writing-type {
-    font-size: 0.75rem;
-    color: var(--teal);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: var(--space-xs);
+  .entries li:first-child {
+    padding-top: 0;
   }
 
-  .writing-title {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    color: var(--ink);
-    font-weight: 500;
-    margin-bottom: 0.25rem;
+  .entries p {
+    margin-bottom: 0.4rem;
   }
 
-  .writing-venue {
-    font-size: 0.9rem;
-    color: var(--slate);
+  .entries .meta {
     margin-bottom: 0;
   }
 
-  /* SoundCloud Embed */
-  .soundcloud-embed {
-    margin-top: var(--space-sm);
+  .soundcloud {
+    display: block;
+    margin-top: 0.75rem;
   }
 
-  .writing-item--audio {
-    padding-bottom: var(--space-md);
-  }
-
-  /* Contact Section */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-lg);
-  }
-
-  .contact-item {
-    background: var(--cream-light);
-    padding: var(--space-lg);
-    border: 1px solid var(--accent-line);
-  }
-
-  .contact-method {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    color: var(--ink);
-    margin-bottom: var(--space-sm);
-    font-weight: 500;
-  }
-
-  .contact-link {
-    color: var(--teal);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.05rem;
-    transition: color 0.2s ease;
-  }
-
-  .contact-link:hover {
-    color: var(--teal-light);
+  .more {
+    margin-top: 1.25rem;
   }
 
   /* Footer */
   .footer {
-    margin-top: var(--space-3xl);
-    padding: var(--space-xl) 0;
-    border-top: 1px solid var(--accent-line);
+    margin-top: 4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
   }
 
-  .footer-content {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 var(--space-lg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .footer a {
+    color: var(--grey);
   }
 
-  .footer-coordinates {
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
-    color: var(--slate);
-    letter-spacing: 0.1em;
-  }
-
-  .footer-text {
-    color: var(--slate);
-    font-size: 0.9rem;
-    margin: 0;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .container {
-      padding: var(--space-lg) var(--space-sm);
+  @media (max-width: 600px) {
+    body {
+      font-size: 17px;
     }
 
-    .nav {
-      position: static;
-      margin-bottom: var(--space-lg);
-      background: var(--cream-light);
-      border-radius: 0;
+    .page {
+      padding: 2.5rem 1rem 2rem;
     }
 
-    .nav-content {
-      justify-content: center;
-      flex-wrap: wrap;
+    .masthead h1 {
+      font-size: 2.1rem;
     }
 
-    .hero {
-      padding: var(--space-lg) 0;
-    }
-
-    .hero-title {
-      font-size: 2.5rem;
-    }
-
-    .section-title {
-      font-size: 1.8rem;
-    }
-
-    .section-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-xs);
-    }
-
-    .work-grid {
+    .book {
       grid-template-columns: 1fr;
     }
 
-    .contact-grid {
+    .book-cover {
+      max-width: 160px;
+    }
+
+    .order dl {
       grid-template-columns: 1fr;
+      gap: 0.1rem;
     }
 
-    .footer-content {
-      flex-direction: column;
-      gap: var(--space-sm);
-      text-align: center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .hero-title {
-      font-size: clamp(1.8rem, 8vw, 2.5rem);
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-    }
-
-    .work-title,
-    .writing-title,
-    .book-title {
-      font-size: 1rem;
-    }
-
-    .work-grid {
-      gap: var(--space-sm);
-    }
-
-    .nav-link {
-      font-size: 0.8rem;
-      padding: var(--space-xs) 0.4rem;
+    .order dd {
+      margin-bottom: 0.6rem;
     }
   }
 </style>
