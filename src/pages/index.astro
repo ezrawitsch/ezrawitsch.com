@@ -96,6 +96,13 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
       <ul class="entries">
         <li>
           <h3 class="logo-head"><a href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer"><img src="/placeview-logo.svg" width="132" height="31" alt="Placeview"></a></h3>
+          <a class="covers" href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer">
+            <picture>
+              <source srcset="/work/placeview-banner.webp" type="image/webp">
+              <img src="/work/placeview-banner.jpg" width="2400" height="800" loading="lazy"
+                   alt="Placeview screens: place readouts for Borough Market, Gallery Row in Los Angeles and Britomart in Auckland, and City Insights maps of Auckland.">
+            </picture>
+          </a>
           <p>A place-analysis tool I'm building at The Business of Cities. Borderless benchmarking for placemakers.</p>
           <p class="meta"><a href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer">placeview.org</a></p>
         </li>
@@ -111,12 +118,14 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <p>Benchmarking and strategy for cities and regions, including Perth, Oxford, Melbourne, Oslo, South East Queensland and Adelaide. The full list is on <a href="https://thebusinessofcities.com/work/" target="_blank" rel="noopener noreferrer">the firm's website</a>.</p>
         </li>
         <li>
-          <h3><a href="https://committeeforbrisbane.org.au/wp-content/uploads/2025/03/Benchmarking-SEQ-Web-1.pdf" target="_blank" rel="noopener noreferrer">Benchmarking South East Queensland</a></h3>
-          <p>Global benchmarking of SEQ ahead of the Brisbane 2032 Games, comparing the region across productivity, transport, liveability, and innovation against peer metro regions worldwide.</p>
-          <p class="meta">Council of Mayors SEQ, 2024 to 2025</p>
-        </li>
-        <li>
           <h3><a href="https://carolinacartography.org" target="_blank" rel="noopener noreferrer">Carolina Cartography</a></h3>
+          <a class="covers" href="https://carolinacartography.org" target="_blank" rel="noopener noreferrer">
+            <picture>
+              <source srcset="/work/carolina-banner.webp" type="image/webp">
+              <img src="/work/carolina-banner.jpg" width="2400" height="800" loading="lazy"
+                   alt="Carolina Cartography projects: the Black Town Map and Geovisualizing Vieques, with photos of the Vieques exhibition.">
+            </picture>
+          </a>
           <p>Mapping, narrative, and human geography. New perspectives on spaces, places, and geographic difference.</p>
           <p class="meta">carolinacartography.org</p>
         </li>
@@ -360,6 +369,11 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
 
   .entries li:first-child {
     padding-top: 0;
+  }
+
+  .entries li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
   .entries p {
