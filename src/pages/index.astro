@@ -86,15 +86,6 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
         </div>
       </div>
 
-      <figure class="maps">
-        <picture>
-          <source srcset="/southland/maps-banner.webp" type="image/webp">
-          <img src="/southland/maps-banner.jpg" width="3000" height="1160" loading="lazy"
-               alt="Five maps from the book: LA County at the scale of other cities and states, citrus country and public health, water and aqueduct infrastructure, and fires along the San Andreas Fault.">
-        </picture>
-        <figcaption>Five of the thirty maps: the County's scale against other places, citrus country and public health, the water system, and faults and fires.</figcaption>
-      </figure>
-
       <figure class="reel">
         <div class="reel-frame">
           <video id="reel-video" src="/southland/harms-way.mp4" poster="/southland/harms-way-poster.jpg"
@@ -104,10 +95,19 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <button id="reel-sound" class="reel-sound" type="button" aria-pressed="false" aria-label="Turn sound on" hidden></button>
         </div>
         <figcaption>
-          <h3>Harm's Way, in conversation</h3>
-          <p>I asked Wade Graham, the book's co-editor and author of its chapter Harm's Way, who put people in harm's way. He answers over the book's maps of the County's fires, from 1917 to the Palisades and Altadena in 2025.</p>
+          <h3>Visualizations and interviews with contributors</h3>
+          <p>A series of shortform map and interview films I made as part of public engagement around the book's launch.</p>
           <p class="meta">Music by Chris Zabriskie, "I'm About to Do the Second Hardest Thing I've Ever Done" (CC BY 4.0).</p>
         </figcaption>
+      </figure>
+
+      <figure class="maps">
+        <picture>
+          <source srcset="/southland/maps-banner.webp" type="image/webp">
+          <img src="/southland/maps-banner.jpg" width="3000" height="1160" loading="lazy"
+               alt="Five maps from the book: LA County at the scale of other cities and states, citrus country and public health, water and aqueduct infrastructure, and fires along the San Andreas Fault.">
+        </picture>
+        <figcaption>Five of the thirty maps: the County's scale against other places, citrus country and public health, the water system, and faults and fires.</figcaption>
       </figure>
 
       <div class="order">
@@ -746,10 +746,14 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
 
   .reel {
     display: grid;
-    grid-template-columns: 230px 1fr;
+    grid-template-columns: 1fr 230px;
     gap: 1.75rem;
-    align-items: end;
+    align-items: center;
     margin: 2rem 0 0;
+  }
+
+  .reel-frame {
+    order: 2;
   }
 
   .reel-frame {
@@ -1022,8 +1026,12 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
       grid-template-columns: 1fr;
     }
 
+    .reel {
+      gap: 1rem;
+    }
+
     .reel-frame {
-      max-width: 260px;
+      width: 100%;
     }
 
     .book-cover {
