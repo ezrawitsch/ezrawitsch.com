@@ -95,6 +95,21 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
         <figcaption>Five of the thirty maps: the County's scale against other places, citrus country and public health, the water system, and faults and fires.</figcaption>
       </figure>
 
+      <figure class="reel">
+        <div class="reel-frame">
+          <video id="reel-video" src="/southland/harms-way.mp4" poster="/southland/harms-way-poster.jpg"
+                 width="720" height="1280" muted loop playsinline preload="none" controls
+                 aria-label="Harm's Way: Wade Graham in conversation with Ezra Rawitsch about fire in Los Angeles County, over the book's maps, with captions on screen"></video>
+          <button id="reel-toggle" class="reel-toggle" type="button" aria-label="Pause video" hidden></button>
+          <button id="reel-sound" class="reel-sound" type="button" aria-pressed="false" aria-label="Turn sound on" hidden></button>
+        </div>
+        <figcaption>
+          <h3>Harm's Way, in conversation</h3>
+          <p>I asked Wade Graham, the book's co-editor and author of its chapter Harm's Way, who put people in harm's way. He answers over the book's maps of the County's fires, from 1917 to the Palisades and Altadena in 2025.</p>
+          <p class="meta">Music by Chris Zabriskie, "I'm About to Do the Second Hardest Thing I've Ever Done" (CC BY 4.0).</p>
+        </figcaption>
+      </figure>
+
       <div class="order">
         <h3>Preorder</h3>
         <dl>
@@ -390,6 +405,96 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
     btn.hidden = false;
     render(false);
   </script>
+  <script>
+    import { select } from 'd3-selection';
+    import 'd3-transition';
+
+    const video = document.getElementById('reel-video');
+    const toggle = document.getElementById('reel-toggle');
+    const sound = document.getElementById('reel-sound');
+    if (video && toggle && sound) {
+      video.removeAttribute('controls');
+      video.muted = true;
+      const frame = select(video.parentNode);
+
+      // a thin progress line along the bottom edge
+      const bar = frame.append('svg').attr('class', 'reel-progress')
+        .attr('viewBox', '0 0 100 1').attr('preserveAspectRatio', 'none').attr('aria-hidden', 'true');
+      bar.append('rect').attr('class', 'reel-progress-track').attr('width', 100).attr('height', 1);
+      const fill = bar.append('rect').attr('class', 'reel-progress-fill').attr('width', 0).attr('height', 1);
+
+      // play mark, shown while paused
+      const mark = select(toggle).append('svg').attr('viewBox', '-30 -30 60 60').attr('aria-hidden', 'true')
+        .style('opacity', 0);
+      mark.append('circle').attr('r', 27);
+      mark.append('path').attr('d', 'M-8,-12 L13,0 L-8,12 Z');
+
+      // speaker: a cross when muted, waves when sound is on
+      const g = select(sound).append('svg').attr('viewBox', '-18 -18 36 36').attr('aria-hidden', 'true');
+      g.append('circle').attr('class', 'reel-sound-bg').attr('r', 17);
+      g.append('path').attr('class', 'reel-speaker').attr('d', 'M-10,-4 L-5,-4 L1,-9 L1,9 L-5,4 L-10,4 Z');
+      const cross = g.append('g').attr('class', 'reel-cross');
+      cross.append('line').attr('x1', 5).attr('y1', -4).attr('x2', 12).attr('y2', 3);
+      cross.append('line').attr('x1', 12).attr('y1', -4).attr('x2', 5).attr('y2', 3);
+      const waves = g.append('g').attr('class', 'reel-waves');
+      waves.selectAll('path').data([5, 9.5]).join('path')
+        .attr('d', (r) => `M${1 + r * 0.7},${-r * 0.7} A${r},${r} 0 0,1 ${1 + r * 0.7},${r * 0.7}`)
+        .style('opacity', 0);
+
+      function renderSound(animate) {
+        const on = !video.muted;
+        waves.selectAll('path').each(function (d, i) {
+          const w = select(this);
+          (animate ? w.transition().delay(on ? i * 110 : 0).duration(220) : w).style('opacity', on ? 1 : 0);
+        });
+        (animate ? cross.transition().duration(180) : cross).style('opacity', on ? 0 : 1);
+        sound.setAttribute('aria-pressed', String(on));
+        sound.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
+        sound.title = on ? 'Sound off' : 'Sound on';
+      }
+
+      let userPaused = false;
+      const play = () => video.play().catch(() => mark.style('opacity', 1));
+      sound.addEventListener('click', () => {
+        video.muted = !video.muted;
+        if (video.paused) { userPaused = false; play(); }
+        renderSound(true);
+      });
+      toggle.addEventListener('click', () => {
+        if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); }
+      });
+
+      const tick = () => {
+        if (video.duration) fill.attr('width', (100 * video.currentTime) / video.duration);
+        if (!video.paused) requestAnimationFrame(tick);
+      };
+      video.addEventListener('play', () => {
+        mark.transition().duration(200).style('opacity', 0);
+        toggle.setAttribute('aria-label', 'Pause video');
+        requestAnimationFrame(tick);
+      });
+      video.addEventListener('volumechange', () => renderSound(true));
+      video.addEventListener('pause', () => {
+        mark.transition().duration(200).style('opacity', 1);
+        toggle.setAttribute('aria-label', 'Play video');
+      });
+
+      // play when on screen, unless the visitor asks for reduced motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        mark.style('opacity', 1);
+        toggle.setAttribute('aria-label', 'Play video');
+      } else {
+        new IntersectionObserver((entries) => entries.forEach((e) => {
+          if (e.isIntersecting && !userPaused && video.paused) play();
+          else if (!e.isIntersecting && !video.paused) video.pause();
+        }), { threshold: 0.5 }).observe(video);
+      }
+
+      toggle.hidden = false;
+      sound.hidden = false;
+      renderSound(false);
+    }
+  </script>
 </body>
 
 <style>
@@ -639,6 +744,117 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
     margin-top: 0.5rem;
   }
 
+  .reel {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 1.75rem;
+    align-items: end;
+    margin: 2rem 0 0;
+  }
+
+  .reel-frame {
+    position: relative;
+    line-height: 0;
+  }
+
+  .reel-frame video {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  }
+
+  .reel-toggle {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+
+  .reel-toggle :global(svg) {
+    width: 64px;
+    height: 64px;
+  }
+
+  .reel-toggle :global(circle) {
+    fill: rgba(0, 0, 0, 0.55);
+  }
+
+  .reel-toggle :global(path) {
+    fill: #fff;
+  }
+
+  .reel-sound {
+    position: absolute;
+    right: 10px;
+    bottom: 14px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .reel-sound :global(svg) {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reel-sound :global(.reel-sound-bg) {
+    fill: rgba(0, 0, 0, 0.6);
+  }
+
+  .reel-sound :global(.reel-speaker) {
+    fill: #fff;
+  }
+
+  .reel-sound :global(.reel-cross line),
+  .reel-sound :global(.reel-waves path) {
+    stroke: #fff;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  .reel-toggle:focus-visible,
+  .reel-sound:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  .reel-frame :global(.reel-progress) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    pointer-events: none;
+  }
+
+  .reel-frame :global(.reel-progress-track) {
+    fill: rgba(255, 255, 255, 0.25);
+  }
+
+  .reel-frame :global(.reel-progress-fill) {
+    fill: #fff;
+  }
+
+  .reel figcaption {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  .reel figcaption h3 {
+    margin-bottom: 0.5rem;
+  }
+
   .order {
     margin-top: 2rem;
   }
@@ -800,6 +1016,14 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
 
     .book {
       grid-template-columns: 1fr;
+    }
+
+    .reel {
+      grid-template-columns: 1fr;
+    }
+
+    .reel-frame {
+      max-width: 260px;
     }
 
     .book-cover {
