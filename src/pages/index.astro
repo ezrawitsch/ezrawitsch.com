@@ -11,6 +11,20 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
   <title>{pageTitle}</title>
   <meta name="description" content={pageDescription}>
   <meta name="color-scheme" content="light dark">
+  <script is:inline>
+    // ?theme=dark or ?theme=light forces a colour scheme, for testing.
+    (function () {
+      var t = new URLSearchParams(location.search).get('theme');
+      if (t !== 'dark' && t !== 'light') return;
+      document.documentElement.setAttribute('data-theme', t);
+      document.querySelector('meta[name="color-scheme"]').setAttribute('content', t);
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('source[media="(prefers-color-scheme: dark)"]').forEach(function (s) {
+          s.setAttribute('media', t === 'dark' ? 'all' : 'not all');
+        });
+      });
+    })();
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -332,7 +346,7 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
   }
 
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --paper: #1d1c1a;
       --ink: #e9e5dc;
       --grey: #a7a49c;
@@ -340,10 +354,23 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
       --rule: #3a3833;
     }
 
-    .terrain-bg {
+    :root:not([data-theme="light"]) .terrain-bg {
       filter: invert(1);
       opacity: 0.12;
     }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #1d1c1a;
+    --ink: #e9e5dc;
+    --grey: #a7a49c;
+    --teal: #7dbdb6;
+    --rule: #3a3833;
+  }
+
+  :root[data-theme="dark"] .terrain-bg {
+    filter: invert(1);
+    opacity: 0.12;
   }
 
   * {
