@@ -93,6 +93,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
                  aria-label="Harm's Way: Wade Graham in conversation with Ezra Rawitsch about fire in Los Angeles County, over the book's maps, with captions on screen"></video>
           <button id="reel-toggle" class="reel-toggle" type="button" aria-label="Pause video" hidden></button>
           <button id="reel-sound" class="reel-sound" type="button" aria-pressed="false" aria-label="Turn sound on" hidden></button>
+          <button id="reel-play" class="reel-play" type="button" aria-label="Pause video" hidden></button>
+          <button id="reel-expand" class="reel-expand" type="button" aria-label="Watch larger" hidden></button>
         </div>
         <figcaption>
           <h3>Visualizations and interviews with contributors</h3>
@@ -100,6 +102,7 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <p class="meta">Music by Chris Zabriskie, "I'm About to Do the Second Hardest Thing I've Ever Done" (CC BY 4.0).</p>
         </figcaption>
       </figure>
+      <dialog id="reel-dialog" class="reel-dialog" aria-label="Video, enlarged"></dialog>
 
       <figure class="maps">
         <picture>
@@ -412,10 +415,16 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
     const video = document.getElementById('reel-video');
     const toggle = document.getElementById('reel-toggle');
     const sound = document.getElementById('reel-sound');
-    if (video && toggle && sound) {
+    const playBtn = document.getElementById('reel-play');
+    const expandBtn = document.getElementById('reel-expand');
+    const dialog = document.getElementById('reel-dialog');
+    if (video && toggle && sound && playBtn && expandBtn && dialog) {
       video.removeAttribute('controls');
       video.muted = true;
-      const frame = select(video.parentNode);
+      const frameEl = video.parentNode;
+      const frame = select(frameEl);
+      const wide = window.matchMedia('(min-width: 601px)');
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
       // a thin progress line along the bottom edge
       const bar = frame.append('svg').attr('class', 'reel-progress')
@@ -423,23 +432,41 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
       bar.append('rect').attr('class', 'reel-progress-track').attr('width', 100).attr('height', 1);
       const fill = bar.append('rect').attr('class', 'reel-progress-fill').attr('width', 0).attr('height', 1);
 
-      // play mark, shown while paused
+      // large play mark, shown while paused
       const mark = select(toggle).append('svg').attr('viewBox', '-30 -30 60 60').attr('aria-hidden', 'true')
         .style('opacity', 0);
       mark.append('circle').attr('r', 27);
       mark.append('path').attr('d', 'M-8,-12 L13,0 L-8,12 Z');
 
+      const icon = (btn) => {
+        const g = select(btn).append('svg').attr('viewBox', '-18 -18 36 36').attr('aria-hidden', 'true');
+        g.append('circle').attr('class', 'reel-btn-bg').attr('r', 17);
+        return g;
+      };
+
       // speaker: a cross when muted, waves when sound is on
-      const g = select(sound).append('svg').attr('viewBox', '-18 -18 36 36').attr('aria-hidden', 'true');
-      g.append('circle').attr('class', 'reel-sound-bg').attr('r', 17);
-      g.append('path').attr('class', 'reel-speaker').attr('d', 'M-10,-4 L-5,-4 L1,-9 L1,9 L-5,4 L-10,4 Z');
-      const cross = g.append('g').attr('class', 'reel-cross');
+      const sp = icon(sound);
+      sp.append('path').attr('class', 'reel-fill').attr('d', 'M-10,-4 L-5,-4 L1,-9 L1,9 L-5,4 L-10,4 Z');
+      const cross = sp.append('g').attr('class', 'reel-line');
       cross.append('line').attr('x1', 5).attr('y1', -4).attr('x2', 12).attr('y2', 3);
       cross.append('line').attr('x1', 12).attr('y1', -4).attr('x2', 5).attr('y2', 3);
-      const waves = g.append('g').attr('class', 'reel-waves');
+      const waves = sp.append('g').attr('class', 'reel-line');
       waves.selectAll('path').data([5, 9.5]).join('path')
         .attr('d', (r) => `M${1 + r * 0.7},${-r * 0.7} A${r},${r} 0 0,1 ${1 + r * 0.7},${r * 0.7}`)
         .style('opacity', 0);
+
+      // play / pause
+      const pp = icon(playBtn);
+      const bars = pp.append('g').attr('class', 'reel-fill');
+      bars.append('rect').attr('x', -6).attr('y', -7).attr('width', 4).attr('height', 14).attr('rx', 1);
+      bars.append('rect').attr('x', 2).attr('y', -7).attr('width', 4).attr('height', 14).attr('rx', 1);
+      const tri = pp.append('path').attr('class', 'reel-fill').attr('d', 'M-4,-8 L8,0 L-4,8 Z').style('opacity', 0);
+
+      // larger / smaller: four corners that turn in when the video is enlarged
+      const OUT = ['M-8,-3 L-8,-8 L-3,-8', 'M3,-8 L8,-8 L8,-3', 'M8,3 L8,8 L3,8', 'M-3,8 L-8,8 L-8,3'];
+      const IN = ['M-8,-3 L-3,-3 L-3,-8', 'M3,-8 L3,-3 L8,-3', 'M8,3 L3,3 L3,8', 'M-3,8 L-3,3 L-8,3'];
+      const corners = icon(expandBtn).append('g').attr('class', 'reel-line')
+        .selectAll('path').data(OUT).join('path').attr('d', (d) => d);
 
       function renderSound(animate) {
         const on = !video.muted;
@@ -453,46 +480,124 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
         sound.title = on ? 'Sound off' : 'Sound on';
       }
 
+      function renderPlay() {
+        const paused = video.paused;
+        mark.transition().duration(200).style('opacity', paused ? 1 : 0);
+        bars.transition().duration(160).style('opacity', paused ? 0 : 1);
+        tri.transition().duration(160).style('opacity', paused ? 1 : 0);
+        const label = paused ? 'Play video' : 'Pause video';
+        playBtn.setAttribute('aria-label', label);
+        playBtn.title = paused ? 'Play' : 'Pause';
+        if (!wide.matches || expanded) toggle.setAttribute('aria-label', label);
+      }
+
       let userPaused = false;
+      let expanded = false;
+      let moving = false;
       const play = () => video.play().catch(() => mark.style('opacity', 1));
+      const playPause = () => {
+        if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); }
+      };
+
+      // enlarge: move the playing video into a full-window dialog and slide it there
+      let slot = null;
+      function flip(from, to, done) {
+        const dx = from.left - to.left, dy = from.top - to.top, k = from.width / to.width;
+        frame.interrupt().style('transform-origin', '0 0')
+          .style('transform', `translate(${dx}px,${dy}px) scale(${k})`)
+          .transition().duration(still.matches ? 0 : 340)
+          .style('transform', 'translate(0px,0px) scale(1)')
+          .on('end interrupt', () => { frame.style('transform', null); if (done) done(); });
+      }
+      function open() {
+        if (expanded || moving) return;
+        moving = true;
+        const from = frameEl.getBoundingClientRect();
+        slot = document.createElement('div');
+        slot.style.width = `${from.width}px`;
+        slot.style.height = `${from.height}px`;
+        slot.style.order = getComputedStyle(frameEl).order;
+        frameEl.replaceWith(slot);
+        dialog.appendChild(frameEl);
+        frameEl.classList.add('is-expanded');
+        dialog.showModal();
+        expanded = true;
+        corners.transition().duration(260).attr('d', (d, i) => IN[i]);
+        expandBtn.setAttribute('aria-label', 'Close larger video');
+        expandBtn.title = 'Smaller';
+        if (video.paused) { userPaused = false; play(); }
+        renderPlay();
+        flip(from, frameEl.getBoundingClientRect(), () => { moving = false; });
+      }
+      function close() {
+        if (!expanded || moving) return;
+        moving = true;
+        dialog.classList.add('closing');
+        const from = frameEl.getBoundingClientRect();
+        const to = slot.getBoundingClientRect();
+        const k = to.width / from.width;
+        corners.transition().duration(260).attr('d', (d, i) => OUT[i]);
+        frame.interrupt().style('transform-origin', '0 0')
+          .transition().duration(still.matches ? 0 : 300)
+          .style('transform', `translate(${to.left - from.left}px,${to.top - from.top}px) scale(${k})`)
+          .on('end interrupt', () => {
+            frame.style('transform', null);
+            frameEl.classList.remove('is-expanded');
+            slot.replaceWith(frameEl);
+            slot = null;
+            dialog.close();
+            dialog.classList.remove('closing');
+            expanded = false;
+            moving = false;
+            expandBtn.setAttribute('aria-label', 'Watch larger');
+            expandBtn.title = 'Larger';
+            renderPlay();
+          });
+      }
+
+      toggle.addEventListener('click', () => {
+        if (wide.matches && !expanded) open(); else playPause();
+      });
+      playBtn.addEventListener('click', playPause);
+      expandBtn.addEventListener('click', () => (expanded ? close() : open()));
       sound.addEventListener('click', () => {
         video.muted = !video.muted;
         if (video.paused) { userPaused = false; play(); }
         renderSound(true);
       });
-      toggle.addEventListener('click', () => {
-        if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); }
-      });
+      dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) close(); });
 
       const tick = () => {
         if (video.duration) fill.attr('width', (100 * video.currentTime) / video.duration);
         if (!video.paused) requestAnimationFrame(tick);
       };
-      video.addEventListener('play', () => {
-        mark.transition().duration(200).style('opacity', 0);
-        toggle.setAttribute('aria-label', 'Pause video');
-        requestAnimationFrame(tick);
-      });
+      video.addEventListener('play', () => { renderPlay(); requestAnimationFrame(tick); });
+      video.addEventListener('pause', renderPlay);
       video.addEventListener('volumechange', () => renderSound(true));
-      video.addEventListener('pause', () => {
-        mark.transition().duration(200).style('opacity', 1);
-        toggle.setAttribute('aria-label', 'Play video');
-      });
 
       // play when on screen, unless the visitor asks for reduced motion
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (still.matches) {
         mark.style('opacity', 1);
-        toggle.setAttribute('aria-label', 'Play video');
       } else {
         new IntersectionObserver((entries) => entries.forEach((e) => {
+          if (expanded || moving) return;
           if (e.isIntersecting && !userPaused && video.paused) play();
           else if (!e.isIntersecting && !video.paused) video.pause();
         }), { threshold: 0.5 }).observe(video);
       }
 
+      toggle.setAttribute('aria-label', wide.matches ? 'Watch larger' : 'Play video');
+      wide.addEventListener('change', () => {
+        if (!wide.matches && expanded) close();
+        toggle.setAttribute('aria-label', wide.matches && !expanded ? 'Watch larger' : (video.paused ? 'Play video' : 'Pause video'));
+      });
       toggle.hidden = false;
       sound.hidden = false;
+      playBtn.hidden = false;
+      expandBtn.hidden = false;
       renderSound(false);
+      renderPlay();
     }
   </script>
 </body>
@@ -810,23 +915,108 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
     height: 36px;
   }
 
-  .reel-sound :global(.reel-sound-bg) {
+  .reel-play,
+  .reel-expand {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .reel-play {
+    left: 10px;
+    bottom: 14px;
+  }
+
+  .reel-expand {
+    right: 10px;
+    top: 10px;
+  }
+
+  .reel-play :global(svg),
+  .reel-expand :global(svg) {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reel-frame :global(.reel-btn-bg) {
     fill: rgba(0, 0, 0, 0.6);
   }
 
-  .reel-sound :global(.reel-speaker) {
+  .reel-frame :global(.reel-fill) {
     fill: #fff;
   }
 
-  .reel-sound :global(.reel-cross line),
-  .reel-sound :global(.reel-waves path) {
+  .reel-frame :global(.reel-line line),
+  .reel-frame :global(.reel-line path) {
     stroke: #fff;
     stroke-width: 1.8;
     stroke-linecap: round;
+    stroke-linejoin: round;
     fill: none;
   }
 
+  @media (min-width: 601px) {
+    .reel-toggle {
+      cursor: zoom-in;
+    }
+
+    .reel-frame.is-expanded .reel-toggle {
+      cursor: pointer;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .reel-expand {
+      display: none;
+    }
+  }
+
+  .reel-dialog {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  .reel-dialog[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .reel-dialog::backdrop {
+    background: rgba(12, 12, 11, 0.86);
+    animation: reel-fade 0.3s ease-out;
+  }
+
+  .reel-dialog.closing::backdrop {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  @keyframes reel-fade {
+    from { opacity: 0; }
+  }
+
+  .reel-frame.is-expanded {
+    width: min(92vw, calc(90vh * 9 / 16));
+  }
+
+  .reel-frame.is-expanded video {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
   .reel-toggle:focus-visible,
+  .reel-play:focus-visible,
+  .reel-expand:focus-visible,
   .reel-sound:focus-visible {
     outline: 2px solid var(--teal);
     outline-offset: 2px;
