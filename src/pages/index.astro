@@ -415,7 +415,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
 
     :root:not([data-theme="light"]) .terrain-bg {
       filter: invert(1);
-      opacity: 0.12;
+      mix-blend-mode: screen;
+      opacity: 0.35;
     }
   }
 
@@ -429,7 +430,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
 
   :root[data-theme="dark"] .terrain-bg {
     filter: invert(1);
-    opacity: 0.12;
+    mix-blend-mode: screen;
+    opacity: 0.35;
   }
 
   * {
@@ -453,7 +455,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
   .terrain-bg {
     position: fixed;
     inset: 0;
-    background: url('/terrain.jpg') center / cover no-repeat;
+    background: url('/terrain-relief.png') center / cover no-repeat;
+    mix-blend-mode: multiply;
     opacity: 0.35;
     pointer-events: none;
     z-index: -1;
