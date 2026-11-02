@@ -10,6 +10,7 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{pageTitle}</title>
   <meta name="description" content={pageDescription}>
+  <meta name="color-scheme" content="light dark">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,9 +143,11 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
       <h2>Selected work</h2>
       <ul class="entries">
         <li>
-          <h3 class="logo-head"><a href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer"><img src="/placeview-logo.svg" width="132" height="31" alt="Placeview"></a></h3>
+          <h3 class="logo-head"><a href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer"><picture><source media="(prefers-color-scheme: dark)" srcset="/placeview-logo-dark.svg"><img src="/placeview-logo.svg" width="132" height="31" alt="Placeview"></picture></a></h3>
           <a class="covers" href="https://placeview.org/welcome" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/work/placeview-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/work/placeview-banner-dark.jpg" type="image/jpeg">
               <source srcset="/work/placeview-banner.webp" type="image/webp">
               <img src="/work/placeview-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="Placeview screens: place readouts for Borough Market, Gallery Row in Los Angeles and Britomart in Auckland, and City Insights maps of Auckland.">
@@ -157,6 +160,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <h3><a href="https://thebusinessofcities.com/work/" target="_blank" rel="noopener noreferrer">Reports at The Business of Cities</a></h3>
           <a class="covers" href="https://thebusinessofcities.com/work/" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/tboc/tboc-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/tboc/tboc-banner-dark.jpg" type="image/jpeg">
               <source srcset="/tboc/tboc-banner.webp" type="image/webp">
               <img src="/tboc/tboc-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="Covers of recent reports by The Business of Cities: Perth's Prospects, Oxford's ecosystem, Benchmarking Melbourne, Oslo: State of the City, Benchmarking South East Queensland, and Benchmarking Adelaide.">
@@ -168,6 +173,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <h3><a href="https://geography.is/" target="_blank" rel="noopener noreferrer">Geography Is</a></h3>
           <a class="covers" href="https://geography.is/" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/work/geography-is-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/work/geography-is-banner-dark.jpg" type="image/jpeg">
               <source srcset="/work/geography-is-banner.webp" type="image/webp">
               <img src="/work/geography-is-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="Geography Is: the title over Buckminster Fuller's Dymaxion map with numbered points, and a street-level close-up of east London.">
@@ -180,6 +187,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <h3><a href="https://carolinacartography.org" target="_blank" rel="noopener noreferrer">Carolina Cartography</a></h3>
           <a class="covers" href="https://carolinacartography.org" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/work/carolina-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/work/carolina-banner-dark.jpg" type="image/jpeg">
               <source srcset="/work/carolina-banner.webp" type="image/webp">
               <img src="/work/carolina-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="Carolina Cartography projects: the Black Town Map and Geovisualizing Vieques, with photos of the Vieques exhibition.">
@@ -196,6 +205,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
             <h3><a href="https://www.zocalopublicsquare.org/what-the-10-richest-angelenos-tell-us-about-l-a-and-its-economy/" target="_blank" rel="noopener noreferrer">What the 10 Richest Angelenos Tell Us About L.A. and Its Economy</a></h3>
             <a class="covers" href="https://www.zocalopublicsquare.org/what-the-10-richest-angelenos-tell-us-about-l-a-and-its-economy/" target="_blank" rel="noopener noreferrer">
               <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="/work/zocalo-banner-dark.webp" type="image/webp">
+                <source media="(prefers-color-scheme: dark)" srcset="/work/zocalo-banner-dark.jpg" type="image/jpeg">
                 <source srcset="/work/zocalo-banner.webp" type="image/webp">
                 <img src="/work/zocalo-banner.jpg" width="2400" height="800" loading="lazy"
                      alt="Detail of the map: median annual income across central Los Angeles, with 13 miles between the highest median income, $222,000 a year, and the lowest, $10,300 a year.">
@@ -208,6 +219,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
             <h3>Housing Systems Researcher, Habitat for Humanity International</h3>
             <a class="covers" href="https://www.euki.de/wp-content/uploads/2024/07/SUNRISE-Project-Financing-for-Prosumer-Renewable-Energy-in-Lithuania-North-Macedonia-and-Bulgaria-November-2023-1.pdf" target="_blank" rel="noopener noreferrer">
               <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="/work/habitat-banner-dark.webp" type="image/webp">
+                <source media="(prefers-color-scheme: dark)" srcset="/work/habitat-banner-dark.jpg" type="image/jpeg">
                 <source srcset="/work/habitat-banner.webp" type="image/webp">
                 <img src="/work/habitat-banner.jpg" width="2400" height="800" loading="lazy"
                      alt="Pages from the SUNRISE report on financing prosumer renewable energy: the cover, an infographic on the benefits of plug-in solar panels, four more project infographics, and a table of financial products.">
@@ -220,6 +233,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
             <h3>Associate Urban Development Consultant, DRAW Brooklyn</h3>
             <a class="covers" href="https://www.archpaper.com/2021/01/draw-brooklyn-reveals-mixed-use-model-block-for-red-hook/" target="_blank" rel="noopener noreferrer">
               <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="/work/draw-banner-dark.webp" type="image/webp">
+                <source media="(prefers-color-scheme: dark)" srcset="/work/draw-banner-dark.jpg" type="image/jpeg">
                 <source srcset="/work/draw-banner.webp" type="image/webp">
                 <img src="/work/draw-banner.jpg" width="2400" height="800" loading="lazy"
                      alt="Renderings of the Model Block in Red Hook, Brooklyn: a street corner, the building along the street, an aerial view at sunset over the waterfront, and a public courtyard.">
@@ -239,6 +254,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <h3><a href="/pdf/rawitsch-coalition-cartography-2024.pdf" target="_blank" rel="noopener noreferrer">Coalition Cartography: Mapping Urban Governance and Transportation in 20th-Century California</a></h3>
           <a class="covers" href="/pdf/rawitsch-coalition-cartography-2024.pdf" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/work/coalition-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/work/coalition-banner-dark.jpg" type="image/jpeg">
               <source srcset="/work/coalition-banner.webp" type="image/webp">
               <img src="/work/coalition-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="Sources from the thesis: a California state highway map, California Highways and Public Works covers, the California Highway Bulletin of 1912, a canyon road, and a Rail Rapid Transit System map for Los Angeles.">
@@ -252,6 +269,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <h3><a href="https://www.ceeol.com/search/article-detail?id=903160" target="_blank" rel="noopener noreferrer">Seeing Sapa: Reading a Transnational Marketplace in the Post-Socialist Cityscape</a></h3>
           <a class="covers" href="https://www.ceeol.com/search/article-detail?id=903160" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/work/sapa-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/work/sapa-banner-dark.jpg" type="image/jpeg">
               <source srcset="/work/sapa-banner.webp" type="image/webp">
               <img src="/work/sapa-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="Pages and photographs from Seeing Sapa: the title page, a streetscape at Sapa marketplace in Prague, a montage of shop signs, and the Vietnamese flag over Sapa's Buddhist shrine.">
@@ -270,6 +289,8 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
           <h3><a href="https://carolinaangles.com/2018/10/18/reflections-on-a-prague-bazaar/" target="_blank" rel="noopener noreferrer">Reflections on a Prague Bazaar</a></h3>
           <a class="covers" href="https://web.archive.org/web/20230529062630/https://carolinaangles.com/2018/10/18/reflections-on-a-prague-bazaar/" target="_blank" rel="noopener noreferrer">
             <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="/work/bazaar-banner-dark.webp" type="image/webp">
+              <source media="(prefers-color-scheme: dark)" srcset="/work/bazaar-banner-dark.jpg" type="image/jpeg">
               <source srcset="/work/bazaar-banner.webp" type="image/webp">
               <img src="/work/bazaar-banner.jpg" width="2400" height="800" loading="lazy"
                    alt="From the essay: a nineteenth-century view of Prague and photographs from Sapa marketplace.">
@@ -308,6 +329,21 @@ const pageDescription = 'I make maps and digital tools to see places from a new 
 
     --serif: 'Source Serif 4', Georgia, serif;
     --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1d1c1a;
+      --ink: #e9e5dc;
+      --grey: #a7a49c;
+      --teal: #7dbdb6;
+      --rule: #3a3833;
+    }
+
+    .terrain-bg {
+      filter: invert(1);
+      opacity: 0.12;
+    }
   }
 
   * {
